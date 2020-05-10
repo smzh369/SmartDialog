@@ -1,0 +1,3 @@
+rootProject.name='SmartDialog'
+include ':app'
+include ':library'
