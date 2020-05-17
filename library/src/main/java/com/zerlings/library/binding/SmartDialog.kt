@@ -1,16 +1,19 @@
-package com.zerlings.library
+package com.zerlings.library.binding
 
 import android.app.Activity
 import android.app.Dialog
 import android.content.Context
+import android.databinding.DataBindingUtil
+import android.databinding.ViewDataBinding
 import android.os.Build
 import android.support.v4.view.ViewCompat
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import com.zerlings.library.R
 
-class SmartDialog private constructor(val builder: Builder) : Dialog(builder.context, R.style.DialogStyle) {
+class SmartDialog<TBinding: ViewDataBinding> private constructor(private val builder: Builder<TBinding>) : Dialog(builder.context, R.style.DialogStyle) {
     //判断对就的activity是否销毁
     val isActivityDestroy: Boolean
         get() {
@@ -19,6 +22,8 @@ class SmartDialog private constructor(val builder: Builder) : Dialog(builder.con
             }
             return false
         }
+
+    private val binding: TBinding
 
     override fun onStart() {
         super.onStart()
@@ -34,11 +39,12 @@ class SmartDialog private constructor(val builder: Builder) : Dialog(builder.con
     }
 
     init {
-        setContentView(builder.layoutRes!!)
+        binding = DataBindingUtil.inflate(layoutInflater, builder.layoutResId!!, null, false)
+        setContentView(binding.root)
         val params = window!!.attributes
         params.gravity = builder.gravity
-        params.width = ViewGroup.LayoutParams.MATCH_PARENT
         if (builder.isFullScreen) {
+            params.width = ViewGroup.LayoutParams.MATCH_PARENT
             params.height = ViewGroup.LayoutParams.MATCH_PARENT
             window!!.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
             // android 5.0 需要做一下
@@ -56,20 +62,17 @@ class SmartDialog private constructor(val builder: Builder) : Dialog(builder.con
 
         window!!.attributes = params
         builder.animStyle?.let { window!!.setWindowAnimations(it) }
-        builder.bindListener?.invoke(this@SmartDialog, window!!.decorView)
-        builder.bind?.bind(this@SmartDialog, window!!.decorView)
+        builder.bind?.invoke(this@SmartDialog, binding)
         setCancelable(builder.cancelable)//外部和返回键不可点击
     }
 
 
-    class Builder(val context: Context) {
-        var layoutRes: Int? = null
+    class Builder<TBinding: ViewDataBinding>(val context: Context) {
+        var layoutResId: Int? = null
             private set
         var animStyle: Int? = null
             private set
-        var bindListener: ((dialog: SmartDialog, view: View) -> Unit)? = null
-            private set
-        var bind: BindListener? = null
+        var bind: ((dialog: SmartDialog<TBinding>, binding: TBinding) -> Unit)? = null
             private set
         var cancelable: Boolean = true
             private set
@@ -79,54 +82,44 @@ class SmartDialog private constructor(val builder: Builder) : Dialog(builder.con
 
         var isBackGroundTransparent = false
 
-        fun setLayoutRes(layoutRes: Int): Builder {
-            this.layoutRes = layoutRes
+        fun setLayoutResId(layoutResId: Int): Builder<TBinding> {
+            this.layoutResId = layoutResId
             return this
         }
 
-        fun setAnimStyle(animStyle: Int): Builder {
+        fun setAnimStyle(animStyle: Int): Builder<TBinding> {
             this.animStyle = animStyle
             return this
         }
 
-        fun setBindListener(block: (dialog: SmartDialog, view: View) -> Unit): Builder {
-            this.bindListener = block
+        fun setBind(block: (dialog: SmartDialog<TBinding>, binding: TBinding) -> Unit): Builder<TBinding> {
+            this.bind = block
             return this
         }
 
-        fun setBindListener(bindListener: BindListener): Builder {
-            this.bind = bindListener
-            return this
-        }
-
-        fun setCancelable(cancelable: Boolean): Builder {
+        fun setCancelable(cancelable: Boolean): Builder<TBinding> {
             this.cancelable = cancelable
             return this
         }
 
-        fun setGravity(gravity: Int): Builder {
+        fun setGravity(gravity: Int): Builder<TBinding> {
             this.gravity = gravity
             return this
         }
 
-        fun setIsFullScreen(isFullScreen: Boolean): Builder {
+        fun setIsFullScreen(isFullScreen: Boolean): Builder<TBinding> {
             this.isFullScreen = isFullScreen
             return this
         }
 
-        fun setIsBackGroundTransparent(isBackGroundTransparent: Boolean): Builder {
+        fun setIsBackGroundTransparent(isBackGroundTransparent: Boolean): Builder<TBinding> {
             this.isBackGroundTransparent = isBackGroundTransparent
             return this
         }
 
-        fun build(): SmartDialog {
-
+        fun build(): SmartDialog<TBinding> {
             return SmartDialog(this)
         }
-    }
-
-    interface BindListener {
-        fun bind(dialog: SmartDialog, view: View)
     }
 
 }
