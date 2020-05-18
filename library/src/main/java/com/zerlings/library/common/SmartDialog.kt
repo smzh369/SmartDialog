@@ -57,7 +57,7 @@ class SmartDialog private constructor(private val builder: Builder) : Dialog(bui
 
         window!!.attributes = params
         builder.animStyle?.let { window!!.setWindowAnimations(it) }
-        builder.bind?.invoke(this@SmartDialog, window!!.decorView)
+        builder.bindView?.invoke(this@SmartDialog, window!!.decorView)
         setCancelable(builder.cancelable)//外部和返回键不可点击
     }
 
@@ -67,7 +67,7 @@ class SmartDialog private constructor(private val builder: Builder) : Dialog(bui
             private set
         var animStyle: Int? = null
             private set
-        var bind: ((dialog: SmartDialog, view: View) -> Unit)? = null
+        var bindView: ((dialog: SmartDialog, view: View) -> Unit)? = null
             private set
         var cancelable: Boolean = true
             private set
@@ -87,8 +87,8 @@ class SmartDialog private constructor(private val builder: Builder) : Dialog(bui
             return this
         }
 
-        fun setBind(block: (dialog: SmartDialog, view: View) -> Unit): Builder {
-            this.bind = block
+        fun bind(block: (dialog: SmartDialog, view: View) -> Unit): Builder {
+            this.bindView = block
             return this
         }
 

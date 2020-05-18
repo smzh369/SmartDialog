@@ -10,7 +10,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        SmartDialog.Builder<DialogTestBinding>(this).setLayoutResId(R.layout.dialog_test).setBind { dialog, binding ->
+        SmartDialog.Builder<DialogTestBinding>(this).setLayoutResId(R.layout.dialog_test).bind { dialog, binding ->
             binding.tvTest.text = "success";
         }.setIsFullScreen(false).build().show()
     }

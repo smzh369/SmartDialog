@@ -62,7 +62,7 @@ class SmartDialog<TBinding: ViewDataBinding> private constructor(private val bui
 
         window!!.attributes = params
         builder.animStyle?.let { window!!.setWindowAnimations(it) }
-        builder.bind?.invoke(this@SmartDialog, binding)
+        builder.bindView?.invoke(this@SmartDialog, binding)
         setCancelable(builder.cancelable)//外部和返回键不可点击
     }
 
@@ -72,7 +72,7 @@ class SmartDialog<TBinding: ViewDataBinding> private constructor(private val bui
             private set
         var animStyle: Int? = null
             private set
-        var bind: ((dialog: SmartDialog<TBinding>, binding: TBinding) -> Unit)? = null
+        var bindView: ((dialog: SmartDialog<TBinding>, binding: TBinding) -> Unit)? = null
             private set
         var cancelable: Boolean = true
             private set
@@ -92,8 +92,8 @@ class SmartDialog<TBinding: ViewDataBinding> private constructor(private val bui
             return this
         }
 
-        fun setBind(block: (dialog: SmartDialog<TBinding>, binding: TBinding) -> Unit): Builder<TBinding> {
-            this.bind = block
+        fun bind(block: (dialog: SmartDialog<TBinding>, binding: TBinding) -> Unit): Builder<TBinding> {
+            this.bindView = block
             return this
         }
 
