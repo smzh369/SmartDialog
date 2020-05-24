@@ -1,39 +1,116 @@
-# SmartDialog
+# SmartDialog [![](https://jitpack.io/v/com.gitee.Zerlings/SmartDialog.svg)](https://jitpack.io/#com.gitee.Zerlings/SmartDialog)
 
-#### 介绍
-{**以下是码云平台说明，您可以替换此简介**
-码云是 OSCHINA 推出的基于 Git 的代码托管平台（同时支持 SVN）。专为开发者提供稳定、高效、安全的云端软件开发协作平台
-无论是个人、团队、或是企业，都能够用码云实现代码托管、项目管理、协作开发。企业项目请看 [https://gitee.com/enterprises](https://gitee.com/enterprises)}
+SmartDialog是一款简单灵活的弹窗生成框架，用于快速创建弹窗，相比原生Dialog能减少大量代码。
 
-#### 软件架构
-软件架构说明
+支持DataBinding。
 
+Requirement
+-----------
+Kotlin / Java(需开启kotlin插件支持)
 
-#### 安装教程
+Android API 19+
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+Usage
+-------
 
-#### 使用说明
+### 1.快速使用
+```kotlin
+//Kotlin
+SmartDialog.Builder(this)
+            .setLayoutResId(R.layout.dialog_test)
+            .setFullScreen(true)
+            .setGravity(Gravity.CENTER)
+            .bind { dialog, view ->
+                view.tv_test.text = "test";
+            }
+            .refresh { dialog, view ->
+                i++
+                view.tv_test.text = "${view.tv_test.text}+$i"
+            }.build().show()
+        
+//Kotlin with DataBinding
+SmartDialog.Builder<DialogTestBinding>(this)
+            .setLayoutResId(R.layout.dialog_test)
+            .setFullScreen(true)
+            .setGravity(Gravity.CENTER)
+            .bind { dialog, binding ->
+                binding.tvTest.text = "test"
+            }
+            .refresh { dialog, binding ->
+                i++
+                binding.setVariable(BR.test, "${binding.tvTest.text}+$i")
+            }.build().show()
+```
+* Note: 和DataBinding一起使用时需要传入layout对应的绑定类
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+### 3.API
+| name                      | info                                                   |
+|------------------------   |--------------------------------------------------------|
+| setLayoutResId(layoutResId: Int)| 设置布局文件                  |
+| setAnimStyle(animStyle: Int)| 设置动画样式                  |
+| setCancelable(cancelable: Boolean)| 是否能取消                  |
+| setGravity(gravity: Int)| 弹窗位置           |
+| setFullScreen(fullScreen: Boolean)| 是否全屏             |
+| setBackGroundTransparent(backGroundTransparent: Boolean)| 背景是否透明             |
+| bind(block: (dialog: SmartDialog, view: View) -> Unit)| 用于界面初始化和绑定监听器，只在dialog创建时执行一次             |
+| refresh(block: (dialog: SmartDialog, view: View) -> Unit)| 用于刷新界面，dialog每次show()时都会执行             |
 
-#### 参与贡献
+Include
+-------
+首先在项目根目录下的`build.gradle`中加入（已有则忽略）:
+```groovy
+allprojects {
+    repositories {
+        ...
+        maven { url "https://jitpack.io" }
+    }
+}
+```
+然后在app文件夹下的`build.gradle`中引入：
+```
+dependencies {
+    implementation 'com.gitee.Zerlings:SmartDialog:0.1.0'
+}
+```
 
-1.  Fork 本仓库
-2.  新建 Feat_xxx 分支
-3.  提交代码
-4.  新建 Pull Request
+License
+-------
+    MIT License
 
-
-#### 码云特技
-
-1.  使用 Readme\_XXX.md 来支持不同的语言，例如 Readme\_en.md, Readme\_zh.md
-2.  码云官方博客 [blog.gitee.com](https://blog.gitee.com)
-3.  你可以 [https://gitee.com/explore](https://gitee.com/explore) 这个地址来了解码云上的优秀开源项目
-4.  [GVP](https://gitee.com/gvp) 全称是码云最有价值开源项目，是码云综合评定出的优秀开源项目
-5.  码云官方提供的使用手册 [https://gitee.com/help](https://gitee.com/help)
-6.  码云封面人物是一档用来展示码云会员风采的栏目 [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)
+    Copyright (c) 2020 Zerlings
+    
+    Permission is hereby granted, free of charge, to any person obtaining a copy
+    of this software and associated documentation files (the "Software"), to deal
+    in the Software without restriction, including without limitation the rights
+    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+    copies of the Software, and to permit persons to whom the Software is
+    furnished to do so, subject to the following conditions:
+    
+    The above copyright notice and this permission notice shall be included in all
+    copies or substantial    Copyright (c) 2020 Zerlings
+    
+    Permission is hereby granted, free of charge, to any person obtaining a copy
+    of this software and associated documentation files (the "Software"), to deal
+    in the Software without restriction, including without limitation the rights
+    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+    copies of the Software, and to permit persons to whom the Software is
+    furnished to do so, subject to the following conditions:
+    
+    The above copyright notice and this permission notice shall be included in all
+    copies or substantial portions of the Software.
+    
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+    SOFTWARE. portions of the Software.
+    
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+    SOFTWARE.

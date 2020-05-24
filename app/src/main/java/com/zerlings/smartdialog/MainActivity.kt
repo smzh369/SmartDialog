@@ -2,6 +2,7 @@ package com.zerlings.smartdialog
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Gravity
 import com.zerlings.library.binding.SmartDialog
 import com.zerlings.smartdialog.databinding.DialogTestBinding
 import kotlinx.android.synthetic.main.activity_main.*
@@ -14,13 +15,14 @@ class MainActivity : AppCompatActivity() {
         var i = 0
         val testDialog = SmartDialog.Builder<DialogTestBinding>(this)
             .setLayoutResId(R.layout.dialog_test)
-            .setIsFullScreen(false)
+            .setFullScreen(true)
+            .setGravity(Gravity.CENTER)
             .bind { dialog, binding ->
-                binding.tvTest.text = "test";
+                binding.tvTest.text = "test"
             }
             .refresh { dialog, binding ->
                 i++
-                binding.tvTest.text = "${binding.tvTest.text}+$i"
+                binding.setVariable(BR.test, "${binding.tvTest.text}+$i")
             }.build()
         btn_show.setOnClickListener {
             testDialog.show()

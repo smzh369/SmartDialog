@@ -16,7 +16,7 @@ class SmartDialog private constructor(private val builder: Builder) : Dialog(bui
 
     private val variableMap = ArrayMap<String, Any>()
     //判断对就的activity是否销毁
-    val isActivityDestroy: Boolean
+    val isActivityDestroyed: Boolean
         get() {
             if (builder.context is Activity) {
                 return builder.context.isFinishing||builder.context.isDestroyed
@@ -26,7 +26,7 @@ class SmartDialog private constructor(private val builder: Builder) : Dialog(bui
 
     override fun onStart() {
         super.onStart()
-        if (builder.isFullScreen) {
+        if (builder.fullScreen) {
             val uiOptions = (View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                     or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                     or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
@@ -42,7 +42,7 @@ class SmartDialog private constructor(private val builder: Builder) : Dialog(bui
         setContentView(builder.layoutResId!!)
         val params = window!!.attributes
         params.gravity = builder.gravity
-        if (builder.isFullScreen) {
+        if (builder.fullScreen) {
             params.width = ViewGroup.LayoutParams.MATCH_PARENT
             params.height = ViewGroup.LayoutParams.MATCH_PARENT
             window!!.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
@@ -54,7 +54,7 @@ class SmartDialog private constructor(private val builder: Builder) : Dialog(bui
         } else {
             params.height = ViewGroup.LayoutParams.WRAP_CONTENT
         }
-        if (builder.isBackGroundTransparent){
+        if (builder.backGroundTransparent){
             window!!.setDimAmount(0f)
 //            window.setBackgroundDrawableResource(android.R.color.transparent)
         }
@@ -86,9 +86,10 @@ class SmartDialog private constructor(private val builder: Builder) : Dialog(bui
             private set
         var gravity: Int = Gravity.CENTER
             private set
-        var isFullScreen: Boolean = false
-
-        var isBackGroundTransparent = false
+        var fullScreen: Boolean = false
+            private set
+        var backGroundTransparent = false
+            private set
 
         fun setLayoutResId(layoutResId: Int): Builder {
             this.layoutResId = layoutResId
@@ -120,13 +121,13 @@ class SmartDialog private constructor(private val builder: Builder) : Dialog(bui
             return this
         }
 
-        fun setIsFullScreen(isFullScreen: Boolean): Builder {
-            this.isFullScreen = isFullScreen
+        fun setFullScreen(fullScreen: Boolean): Builder {
+            this.fullScreen = fullScreen
             return this
         }
 
-        fun setIsBackGroundTransparent(isBackGroundTransparent: Boolean): Builder {
-            this.isBackGroundTransparent = isBackGroundTransparent
+        fun setBackGroundTransparent(backGroundTransparent: Boolean): Builder {
+            this.backGroundTransparent = backGroundTransparent
             return this
         }
 
