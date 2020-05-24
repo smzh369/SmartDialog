@@ -5,6 +5,7 @@ import android.app.Dialog
 import android.content.Context
 import android.os.Build
 import android.support.v4.view.ViewCompat
+import android.util.ArrayMap
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +13,8 @@ import android.view.WindowManager
 import com.zerlings.library.R
 
 class SmartDialog private constructor(private val builder: Builder) : Dialog(builder.context, R.style.DialogStyle) {
+
+    private val variableMap = ArrayMap<String, Any>()
     //判断对就的activity是否销毁
     val isActivityDestroy: Boolean
         get() {
@@ -32,6 +35,7 @@ class SmartDialog private constructor(private val builder: Builder) : Dialog(bui
                     or View.SYSTEM_UI_FLAG_FULLSCREEN)
             window!!.decorView.systemUiVisibility = uiOptions
         }
+        builder.refreshView?.invoke(this, window!!.decorView)
     }
 
     init {
@@ -57,17 +61,26 @@ class SmartDialog private constructor(private val builder: Builder) : Dialog(bui
 
         window!!.attributes = params
         builder.animStyle?.let { window!!.setWindowAnimations(it) }
-        builder.bindView?.invoke(this@SmartDialog, window!!.decorView)
+        builder.bindView?.invoke(this, window!!.decorView)
         setCancelable(builder.cancelable)//外部和返回键不可点击
     }
 
+    fun setVariable(key: String, variable: Any) {
+        variableMap[key] = variable
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    fun <T>getVariable(key: String): T = variableMap[key] as T
 
     class Builder(val context: Context) {
+
         var layoutResId: Int? = null
             private set
         var animStyle: Int? = null
             private set
         var bindView: ((dialog: SmartDialog, view: View) -> Unit)? = null
+            private set
+        var refreshView: ((dialog: SmartDialog, view: View) -> Unit)? = null
             private set
         var cancelable: Boolean = true
             private set
@@ -89,6 +102,11 @@ class SmartDialog private constructor(private val builder: Builder) : Dialog(bui
 
         fun bind(block: (dialog: SmartDialog, view: View) -> Unit): Builder {
             this.bindView = block
+            return this
+        }
+
+        fun refresh(block: (dialog: SmartDialog, view: View) -> Unit): Builder {
+            this.refreshView = block
             return this
         }
 

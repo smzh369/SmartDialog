@@ -7,6 +7,7 @@ import android.databinding.DataBindingUtil
 import android.databinding.ViewDataBinding
 import android.os.Build
 import android.support.v4.view.ViewCompat
+import android.util.ArrayMap
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +15,8 @@ import android.view.WindowManager
 import com.zerlings.library.R
 
 class SmartDialog<TBinding: ViewDataBinding> private constructor(private val builder: Builder<TBinding>) : Dialog(builder.context, R.style.DialogStyle) {
+
+    private val variableMap = ArrayMap<String, Any>()
     //判断对就的activity是否销毁
     val isActivityDestroy: Boolean
         get() {
@@ -36,6 +39,7 @@ class SmartDialog<TBinding: ViewDataBinding> private constructor(private val bui
                     or View.SYSTEM_UI_FLAG_FULLSCREEN)
             window!!.decorView.systemUiVisibility = uiOptions
         }
+        builder.refreshView?.invoke(this, binding)
     }
 
     init {
@@ -66,13 +70,22 @@ class SmartDialog<TBinding: ViewDataBinding> private constructor(private val bui
         setCancelable(builder.cancelable)//外部和返回键不可点击
     }
 
+    fun setVariable(key: String, variable: Any) {
+        variableMap[key] = variable
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    fun <T>getVariable(key: String): T = variableMap[key] as T
 
     class Builder<TBinding: ViewDataBinding>(val context: Context) {
+
         var layoutResId: Int? = null
             private set
         var animStyle: Int? = null
             private set
         var bindView: ((dialog: SmartDialog<TBinding>, binding: TBinding) -> Unit)? = null
+            private set
+        var refreshView: ((dialog: SmartDialog<TBinding>, binding: TBinding) -> Unit)? = null
             private set
         var cancelable: Boolean = true
             private set
@@ -94,6 +107,11 @@ class SmartDialog<TBinding: ViewDataBinding> private constructor(private val bui
 
         fun bind(block: (dialog: SmartDialog<TBinding>, binding: TBinding) -> Unit): Builder<TBinding> {
             this.bindView = block
+            return this
+        }
+
+        fun refresh(block: (dialog: SmartDialog<TBinding>, binding: TBinding) -> Unit): Builder<TBinding> {
+            this.refreshView = block
             return this
         }
 
