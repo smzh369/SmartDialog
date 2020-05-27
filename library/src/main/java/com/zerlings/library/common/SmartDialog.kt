@@ -5,7 +5,6 @@ import android.app.Dialog
 import android.content.Context
 import android.os.Build
 import android.support.v4.view.ViewCompat
-import android.util.ArrayMap
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
@@ -14,12 +13,16 @@ import com.zerlings.library.R
 
 class SmartDialog private constructor(private val builder: Builder) : Dialog(builder.context, R.style.DialogStyle) {
 
-    private val variableMap = ArrayMap<String, Any>()
-    //判断对就的activity是否销毁
+    private val variableMap = HashMap<String, Any>()
+    //判断对应的activity是否销毁
     val isActivityDestroyed: Boolean
         get() {
             if (builder.context is Activity) {
-                return builder.context.isFinishing||builder.context.isDestroyed
+                return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                    builder.context.isFinishing||builder.context.isDestroyed
+                } else {
+                    builder.context.isFinishing
+                }
             }
             return false
         }
@@ -27,12 +30,22 @@ class SmartDialog private constructor(private val builder: Builder) : Dialog(bui
     override fun onStart() {
         super.onStart()
         if (builder.fullScreen) {
-            val uiOptions = (View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                    or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                    or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                    or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                    or View.SYSTEM_UI_FLAG_IMMERSIVE
-                    or View.SYSTEM_UI_FLAG_FULLSCREEN)
+            val uiOptions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        or View.SYSTEM_UI_FLAG_LOW_PROFILE
+                        or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        //or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                        //or View.SYSTEM_UI_FLAG_FULLSCREEN
+                        or View.SYSTEM_UI_FLAG_IMMERSIVE)
+            } else {
+                (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        or View.SYSTEM_UI_FLAG_LOW_PROFILE
+                        //or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        //or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                        or View.SYSTEM_UI_FLAG_FULLSCREEN)
+            }
             window!!.decorView.systemUiVisibility = uiOptions
         }
         builder.refreshView?.invoke(this, window!!.decorView)
