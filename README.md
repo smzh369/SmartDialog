@@ -41,7 +41,7 @@ SmartDialog.Builder<DialogTestBinding>(this)
                 binding.setVariable(BR.test, "${binding.tvTest.text}+$i")
             }.build().show()
 ```
-* Note: 和DataBinding一起使用时需要传入layout对应的绑定类
+* Note: 和DataBinding一起使用时需要声明泛型为layout对应的绑定类
 
 ### 3.API
 | name                      | info                                                   |
@@ -69,7 +69,7 @@ allprojects {
 然后在app文件夹下的`build.gradle`中引入：
 ```
 dependencies {
-    implementation 'com.gitee.Zerlings:SmartDialog:0.1.0'
+    implementation 'com.gitee.Zerlings:SmartDialog:0.1.1'
 }
 ```
 
