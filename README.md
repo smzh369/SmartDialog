@@ -10,6 +10,8 @@ Kotlin / Java(需开启kotlin插件支持)
 
 Android API 19+
 
+1.0.0以上版本仅支持AndroidX
+
 Usage
 -------
 
@@ -17,29 +19,72 @@ Usage
 ```kotlin
 //Kotlin
 SmartDialog.Builder(this)
-            .setLayoutResId(R.layout.dialog_test)
-            .setFullScreen(true)
-            .setGravity(Gravity.CENTER)
-            .bind { dialog, view ->
-                view.tv_test.text = "test";
-            }
-            .refresh { dialog, view ->
-                i++
-                view.tv_test.text = "${view.tv_test.text}+$i"
-            }.build().show()
+    .setLayoutResId(R.layout.dialog_test)
+    .setFullScreen(true)
+    .setGravity(Gravity.CENTER)
+    .bind { dialog, view ->
+        view.tv_test.text = "test";
+    }
+    .refresh { dialog, view ->
+        i++
+        view.tv_test.text = "${view.tv_test.text}+$i"
+    }.build().show()
         
 //Kotlin with DataBinding
 SmartDialog.Builder<DialogTestBinding>(this)
-            .setLayoutResId(R.layout.dialog_test)
-            .setFullScreen(true)
-            .setGravity(Gravity.CENTER)
-            .bind { dialog, binding ->
-                binding.tvTest.text = "test"
-            }
-            .refresh { dialog, binding ->
-                i++
-                binding.setVariable(BR.test, "${binding.tvTest.text}+$i")
-            }.build().show()
+    .setLayoutResId(R.layout.dialog_test)
+    .setFullScreen(true)
+    .setGravity(Gravity.CENTER)
+    .bind { dialog, binding ->
+        binding.tvTest.text = "test"
+    }
+    .refresh { dialog, binding ->
+        i++
+        binding.setVariable(BR.test, "${binding.tvTest.text}+$i")
+    }.build().show()
+            
+//Java
+SmartDialog testDialog = new SmartDialog.Builder(this)
+    .setLayoutResId(R.layout.dialog_test)
+    .setFullScreen(true)
+    .setGravity(Gravity.CENTER)
+    .bind(new Function2<SmartDialog, View, Unit>() {
+        @Override
+        public Unit invoke(SmartDialog smartDialog, View view) {
+            //todo
+            return null;
+        }
+    })
+    .refresh(new Function2<SmartDialog, View, Unit>() {
+        @Override
+        public Unit invoke(SmartDialog smartDialog, View view) {
+            //todo
+            return null;
+        }
+    }).build();
+testDialog.show();
+
+//Java with DataBinding
+SmartDialog<DialogTestBinding> testDialog = new SmartDialog.Builder<DialogTestBinding>(this)
+    .setLayoutResId(R.layout.dialog_test)
+    .setFullScreen(true)
+    .setGravity(Gravity.CENTER)
+    .bind(new Function2<SmartDialog<DialogTestBinding>, DialogTestBinding, Unit>() {
+        @Override
+        public Unit invoke(SmartDialog<DialogTestBinding> dialog, DialogTestBinding binding) {
+            //todo
+            return null;
+        }
+    })
+    .refresh(new Function2<SmartDialog<DialogTestBinding>, DialogTestBinding, Unit>() {
+        @Override
+        public Unit invoke(SmartDialog<DialogTestBinding> dialog, DialogTestBinding binding) {
+            //todo
+            return null;
+        }
+    })
+    .build();
+testDialog.show();
 ```
 * Note: 和DataBinding一起使用时需要声明泛型为layout对应的绑定类
 
@@ -69,7 +114,7 @@ allprojects {
 然后在app文件夹下的`build.gradle`中引入：
 ```
 dependencies {
-    implementation 'com.gitee.Zerlings:SmartDialog:0.1.1'
+    implementation 'com.gitee.Zerlings:SmartDialog:1.0.0'
 }
 ```
 

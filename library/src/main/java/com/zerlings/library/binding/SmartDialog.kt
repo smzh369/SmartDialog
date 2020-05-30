@@ -3,11 +3,10 @@ package com.zerlings.library.binding
 import android.app.Activity
 import android.app.Dialog
 import android.content.Context
-import android.databinding.DataBindingUtil
-import android.databinding.ViewDataBinding
+import androidx.databinding.DataBindingUtil
+import androidx.databinding.ViewDataBinding
 import android.os.Build
-import android.support.v4.view.ViewCompat
-import android.util.ArrayMap
+import androidx.core.view.ViewCompat
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
@@ -80,7 +79,7 @@ class SmartDialog<TBinding: ViewDataBinding> private constructor(private val bui
 
         window!!.attributes = params
         builder.animStyle?.let { window!!.setWindowAnimations(it) }
-        builder.bindView?.invoke(this@SmartDialog, binding)
+        builder.bindView?.invoke(this, binding)
         setCancelable(builder.cancelable)//外部和返回键不可点击
     }
 

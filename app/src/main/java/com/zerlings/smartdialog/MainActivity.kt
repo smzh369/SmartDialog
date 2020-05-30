@@ -1,6 +1,6 @@
 package com.zerlings.smartdialog
 
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Gravity
 import com.zerlings.library.binding.SmartDialog
